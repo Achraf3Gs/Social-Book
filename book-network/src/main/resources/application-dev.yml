@@ -1,0 +1,44 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/book_social_network
+    username: username
+    password: password
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+  mail:
+    host: localhost
+    port: 1025
+    username: guesmish
+    password: guesmish
+    properties:
+      mail:
+        smtp:
+          trust: "*"
+        auth: true
+        starttls:
+          enable: true
+        connectiontimout: 5000
+        timeout: 3000
+        writetimeout: 5000
+springdoc:
+  default-produces-media-type: application/json  # Add this line to set the default produces media type
+
+application:
+  security:
+    jwt:
+      secret-key: 8ba5bcf689a7b166bdbf984fb4668ecce6070d01db7e7078d2994ffffac48034 # Ensure this is base64-encoded
+      expiration: 8640000 # Expiration in milliseconds (e.g., 100 days)
+  mailing:
+    frontend:
+      activation-url: http://localhost:4200/activate-account
+  file:
+    upload:
+      photos-output-path: ./uploads
