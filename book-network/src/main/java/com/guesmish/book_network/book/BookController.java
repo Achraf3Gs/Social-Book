@@ -22,7 +22,6 @@ public class BookController {
     public ResponseEntity<Integer> saveBook(
             @Valid @RequestBody BookRequest request,
             Authentication connectedUser) {
-
       return ResponseEntity.ok(service.save(request, connectedUser));
   }
 

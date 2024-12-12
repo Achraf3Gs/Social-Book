@@ -44,8 +44,9 @@ public class BookService {
 
     public PageResponse<BookResponse> findAllBooks(int page, int size, Authentication connectedUser) {
         User user = ((User) connectedUser.getPrincipal());
+        String userId = String.valueOf(user.getId()); // Assuming user has an 'id' field, you may need to adjust this based on your model
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdDate"));
-        Page<Book> books = bookRepository.findAllDisplayableBooks(pageable, user.getId());
+        Page<Book> books = bookRepository.findAllDisplayableBooks(pageable, userId);
         List<BookResponse> booksResponse = books.stream()
                 .map(bookMapper::toBookResponse)
                 .toList();

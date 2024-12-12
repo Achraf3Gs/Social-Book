@@ -38,8 +38,8 @@ public class BeanConfig {
     }
 
     @Bean
-    public AuditorAware<Integer> auditorAware() {
-       return new ApplicationAuditAware();
+    public AuditorAware<String> auditorAware() {
+        return new ApplicationAuditAware();
     }
 
     @Bean
