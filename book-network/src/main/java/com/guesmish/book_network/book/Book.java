@@ -26,6 +26,8 @@ public class Book extends BaseEntity {
     private String title;
     private String authorName;
     private String isbn;
+
+    @Column(columnDefinition = "TEXT")
     private String synopsis;
     private String bookCover;
     private boolean archived;

@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/book_social_network
+    url: jdbc:postgresql://postgres-sql-bsn:5432/book_social_network
     username: username
     password: password
     driver-class-name: org.postgresql.Driver
@@ -13,32 +13,41 @@ spring:
         format_sql: true
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect
+
   mail:
-    host: localhost
-    port: 1025
-    username: guesmish
-    password: guesmish
+    host: ${EMAIL_HOSTNAME}
+    port: 465
+    username: ${EMAIL_USERNAME}
+    password: ${EMAIL_PASSWORD}# Use your Gmail App Password here
     properties:
       mail:
         smtp:
-          trust: "*"
-        auth: true
+          auth: true
+          ssl:
+            enable: true
+            trust: "*"
         starttls:
           enable: true
-        connectiontimout: 5000
-        timeout: 3000
-        writetimeout: 5000
+        debug: true # This enables debug logging for email sending
+    protocol: smtp
+
 springdoc:
-  default-produces-media-type: application/json  # Add this line to set the default produces media type
+  default-produces-media-type: application/json  # Set the default produces media type to JSON
 
 application:
   security:
     jwt:
       secret-key: 8ba5bcf689a7b166bdbf984fb4668ecce6070d01db7e7078d2994ffffac48034 # Ensure this is base64-encoded
       expiration: 8640000 # Expiration in milliseconds (e.g., 100 days)
+
   mailing:
     frontend:
       activation-url: http://localhost:4200/activate-account
+  cors:
+    origins:http://localhost:4200,http://localhost:8080,http://192.168.1.22:8085,http://192.168.1.22:8080
   file:
-    upload:
+    uploads:
       photos-output-path: ./uploads
+
+server:
+  port: 8085

@@ -36,7 +36,7 @@ public class FeedBackService {
         }
 
         User user = ((User) connectedUser.getPrincipal());
-        if (!Objects.equals(book.getOwner().getId(), user.getId())) {
+        if (Objects.equals(book.getOwner().getId(), user.getId())) {
             throw new OperationNotPermittedException("You cannot give a feedBack to your own book");
         }
         FeedBack feedBack= feedBackMapper.toFeedBack(feedBackRequest);

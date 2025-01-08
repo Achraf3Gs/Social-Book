@@ -1,6 +1,7 @@
 package com.guesmish.book_network.file;
 
 import com.guesmish.book_network.book.Book;
+import jakarta.annotation.Nonnull;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,55 +15,59 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import static java.io.File.separator;
+import static java.lang.System.currentTimeMillis;
+
 @Slf4j
 @Service@RequiredArgsConstructor
 public class FileStorageService {
 
-    @Value("${application.file.upload.photos-output-path}")
+    @Value("${application.file.uploads.photos-output-path}")
     private String fileUploadPath;
 
     public String saveFile(
-            @NotNull MultipartFile sourceFile,
-            @NotNull Integer userId) {
-        final String fileUploadSubPath= "users "+ File.separator + userId;
+            @Nonnull MultipartFile sourceFile,
+            @Nonnull String userId
+    ) {
+        final String fileUploadSubPath = "users" + separator + userId;
         return uploadFile(sourceFile, fileUploadSubPath);
     }
 
     private String uploadFile(
-            @NotNull MultipartFile sourceFile,
-            @NotNull String fileUploadSubPath) {
-        final String finalFileUploadPath = fileUploadPath + File.separator + fileUploadSubPath;
-        File targetFolder= new File(finalFileUploadPath);
-        if(!targetFolder.exists()) {
+            @Nonnull MultipartFile sourceFile,
+            @Nonnull String fileUploadSubPath
+    ) {
+        final String finalUploadPath = fileUploadPath + separator + fileUploadSubPath;
+        File targetFolder = new File(finalUploadPath);
+
+        if (!targetFolder.exists()) {
             boolean folderCreated = targetFolder.mkdirs();
-            if(!folderCreated) {
-                log.warn("Failed to create the target folder");
+            if (!folderCreated) {
+                log.warn("Failed to create the target folder: " + targetFolder);
                 return null;
             }
         }
         final String fileExtension = getFileExtension(sourceFile.getOriginalFilename());
-        // ./upload/users/1/1233457.png
-        String targetFilePath = finalFileUploadPath + File.separator + System.currentTimeMillis() + "."+ fileExtension;
+        String targetFilePath = finalUploadPath + separator + currentTimeMillis() + "." + fileExtension;
         Path targetPath = Paths.get(targetFilePath);
-        try{
+        try {
             Files.write(targetPath, sourceFile.getBytes());
-            log.info("File saved to" + targetFilePath);
+            log.info("File saved to: " + targetFilePath);
             return targetFilePath;
-        }catch (IOException e){
+        } catch (IOException e) {
             log.error("File was not saved", e);
         }
         return null;
     }
 
     private String getFileExtension(String fileName) {
-        if(fileName== null || fileName.isEmpty()){
+        if (fileName == null || fileName.isEmpty()) {
             return "";
         }
-        //something.png
-        int index = fileName.lastIndexOf(".");
-        if(index == -1){
+        int lastDotIndex = fileName.lastIndexOf(".");
+        if (lastDotIndex == -1) {
             return "";
         }
-        return fileName.substring(index).toLowerCase();
+        return fileName.substring(lastDotIndex + 1).toLowerCase();
     }
 }

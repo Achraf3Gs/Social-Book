@@ -2,11 +2,13 @@ package com.guesmish.book_network.book;
 
 import com.guesmish.book_network.file.FileUtils;
 import com.guesmish.book_network.history.BookTransactionHistory;
+import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+
 public class BookMapper {
 
 
@@ -15,6 +17,7 @@ public class BookMapper {
 
                 .title(request.title())
                 .authorName(request.authorName())
+                .isbn(request.isbn())
                 .synopsis(request.synopsis())
                 .archived(false)
                 .shareable(request.shareable())

@@ -4,10 +4,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.Optional;
 
-public interface BookTransactionHistoryRepository  extends JpaRepository<BookTransactionHistory, Integer> {
+public interface    BookTransactionHistoryRepository  extends JpaRepository<BookTransactionHistory, Integer> {
 
     @Query("""
               SELECT history
@@ -17,11 +18,11 @@ public interface BookTransactionHistoryRepository  extends JpaRepository<BookTra
     Page<BookTransactionHistory> findAllBorrowedBooks(Pageable pageable, Integer userId);
 
     @Query("""
-              SELECT history
-              FROM BookTransactionHistory history
-              WHERE history.book.owner.id= :userId
+             SELECT history
+             FROM BookTransactionHistory history
+             WHERE history.book.createdBy = :userId
            """)
-    Page<BookTransactionHistory> findAllReturnedBooks(Pageable pageable, Integer userId);
+    Page<BookTransactionHistory> findAllReturnedBooks(Pageable pageable, String userId);
 
 
     @Query("""
@@ -42,7 +43,7 @@ public interface BookTransactionHistoryRepository  extends JpaRepository<BookTra
               AND history.returned= false
               AND history.returnedApproved= false
            """)
-    Optional<BookTransactionHistory> findByBookIdAndUserId(Integer bookId, Integer userId);
+    Optional<BookTransactionHistory> findByBookIdAndUserId(@Param("bookId") Integer bookId, @Param("userId") String userId);
 
 
     @Query("""
@@ -53,5 +54,5 @@ public interface BookTransactionHistoryRepository  extends JpaRepository<BookTra
               AND history.returned= true
               AND history.returnedApproved= false
            """)
-    Optional<BookTransactionHistory> findByBookIdAndOwnerId(Integer bookId, Integer id);
+    Optional<BookTransactionHistory> findByBookIdAndOwnerId(@Param("bookId") Integer bookId, @Param("userId") String userId);
 }

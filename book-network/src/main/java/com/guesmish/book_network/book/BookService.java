@@ -29,12 +29,33 @@ public class BookService {
     private final BookRepository bookRepository;
     private final FileStorageService fileStorageService;
 
+
+
     public Integer save(BookRequest request, Authentication connectedUser) {
         User user = ((User) connectedUser.getPrincipal());
-        Book book = bookMapper.toBook(request);
-        book.setOwner(user);
+        Book book;
+
+        if (request.id() != null) {
+            // Find the existing book by ID
+            book = bookRepository.findById(request.id())
+                    .orElseThrow(() -> new IllegalArgumentException("Book with ID " + request.id() + " not found"));
+        } else {
+            // Create a new book
+            book = new Book();
+        }
+
+        // Map the request to the book entity
+        book.setTitle(request.title());
+        book.setAuthorName(request.authorName());
+        book.setIsbn(request.isbn());
+        book.setSynopsis(request.synopsis());
+        book.setShareable(request.shareable());
+        book.setOwner(user); // Ensure the owner is always set
+
         return bookRepository.save(book).getId();
     }
+
+
 
     public BookResponse findById(Integer bookId) {
         return bookRepository.findById(bookId)
@@ -100,7 +121,8 @@ public class BookService {
     public PageResponse<BorrowedBookResponse> findAllReturnedBooks(int page, int size, Authentication connectedUser) {
         User user = ((User) connectedUser.getPrincipal());
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdDate"));
-        Page<BookTransactionHistory> allBorrowedBooks = bookTransactionHistoryRepository.findAllReturnedBooks(pageable, user.getId());
+        System.out.println("Connected User Name: " + connectedUser.getName());
+        Page<BookTransactionHistory> allBorrowedBooks = bookTransactionHistoryRepository.findAllReturnedBooks(pageable, connectedUser.getName());
         List<BorrowedBookResponse> booksResponse = allBorrowedBooks.stream()
                 .map(bookMapper::toBorrowedBookResponse)
                 .toList();
@@ -172,7 +194,7 @@ public class BookService {
         if (Objects.equals(book.getOwner().getId(), user.getId())) {
             throw new OperationNotPermittedException("You can not borrow or return your own book");
         }
-        BookTransactionHistory bookTransactionHistory= bookTransactionHistoryRepository.findByBookIdAndUserId(bookId, user.getId())
+        BookTransactionHistory bookTransactionHistory= bookTransactionHistoryRepository.findByBookIdAndUserId(bookId, String.valueOf(user.getId()))
                 .orElseThrow(()->new OperationNotPermittedException("You did not borrow this book"));
         bookTransactionHistory.setReturned(true);
         return bookTransactionHistoryRepository.save(bookTransactionHistory).getId();
@@ -185,10 +207,10 @@ public class BookService {
             throw new OperationNotPermittedException("The requested book cannot be borrowed since it is archived or not shareable");
         }
         User user = ((User) connectedUser.getPrincipal());
-        if (Objects.equals(book.getOwner().getId(), user.getId())) {
-            throw new OperationNotPermittedException("You can not borrow or return your own book");
+        if (!Objects.equals(book.getOwner().getId(), user.getId())) {
+            throw new OperationNotPermittedException("You can not borrow a book that you do not own");
         }
-        BookTransactionHistory bookTransactionHistory= bookTransactionHistoryRepository.findByBookIdAndOwnerId(bookId, user.getId())
+        BookTransactionHistory bookTransactionHistory= bookTransactionHistoryRepository.findByBookIdAndOwnerId(bookId, String.valueOf(user.getId()))
                 .orElseThrow(()->new OperationNotPermittedException("The book is not returned yet. You cannot approve this return"));
         bookTransactionHistory.setReturnedApproved(true);
         return bookTransactionHistoryRepository.save(bookTransactionHistory).getId();
@@ -199,7 +221,7 @@ public class BookService {
         Book book = bookRepository.findById(bookId).orElseThrow(
                 () -> new EntityNotFoundException("No book found with the ID:" + bookId));
         User user = ((User) connectedUser.getPrincipal());
-        var bookCover= fileStorageService.saveFile(file,user.getId());
+        var bookCover= fileStorageService.saveFile(file, String.valueOf(((User) connectedUser.getPrincipal()).getId()));
         book.setBookCover(bookCover);
         bookRepository.save(book);
     }

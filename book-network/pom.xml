@@ -10,9 +10,9 @@
 	</parent>
 	<groupId>com.guesmish</groupId>
 	<artifactId>book-network</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.3</version>
 	<name>book-network-api</name>
-	<description> Spring Boot project for Book Social Netwprk</description>
+	<description> Spring Boot project for Book Social Network</description>
 	<url/>
 	<licenses>
 		<license/>
