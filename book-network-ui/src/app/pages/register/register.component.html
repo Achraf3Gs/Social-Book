@@ -1,0 +1,49 @@
+<div class="container-fluid card login-container">
+  <h3 class="text-center">Register</h3>
+  <hr>
+  <div class="alert alert-danger" role="alert" *ngIf="errorMsg.length">
+    <p *ngFor="let msg of errorMsg">{{msg}}</p>
+  </div>
+  <div class="mb-3">
+    <label for="firstname" class="form-label">FirstName</label>
+    <input [(ngModel)]="registerRequest.firstname" type="text" class="form-control" id="firstname" placeholder="firstname">
+  </div>
+  <div class="mb-3">
+    <label for="lastname" class="form-label">LastName</label>
+    <input [(ngModel)]="registerRequest.lastname" type="text" class="form-control" id="lastname" placeholder="lastname">
+  </div>
+  <div class="mb-3">
+    <label for="login" class="form-label">Email address</label>
+    <input [(ngModel)]="registerRequest.email" type="email" class="form-control" id="login" placeholder="name@example.com">
+  </div>
+  <div class="mb-3">
+    <label for="dateOfBirth" class="form-label">dateOfBirth</label>
+    <input [(ngModel)]="registerRequest.dateOfBirth" type="date" class="form-control" id="dateOfBirth" placeholder="date of birth">
+  </div>
+  <div class="input-group mb-3">
+    <input [(ngModel)]="registerRequest.password"
+           [type]="showPassword ? 'text' : 'password'"
+           class="form-control"
+           id="password"
+           placeholder="Password">
+    <button (click)="togglePasswordVisibility()"
+            type="button"
+            class="btn btn-outline-secondary">
+      <i [class]="showPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+    </button>
+  </div>
+
+  <div class="d-flex justify-content-between mb-3">
+    <button (click)="register()" type="button" class="btn btn-primary">
+      <em class=" fa-solid fa-registered"> &nbsp;Register</em>
+    </button>
+    <div>
+      If you have an account, go to login&nbsp;
+      <button (click)="login()" type="button"class="btn btn-link">
+        <em class="fas fa-sign-in-alt"> &nbsp;Sign in</em>
+      </button>
+    </div>
+  </div>
+</div>
+
+

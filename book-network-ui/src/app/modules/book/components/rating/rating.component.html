@@ -1,0 +1,11 @@
+<div class="rating">
+ <ng-container *ngFor="let _ of [].constructor(fullStars); let i =index">
+   <i class="<i fas fa-star text-warning"></i>
+ </ng-container>
+ <ng-container *ngIf="hasHalfStar">
+   <i class="fa-solid fa-star-half-stroke text-warning"></i>
+ </ng-container>
+  <ng-container *ngFor="let  _ of [].constructor(emptyStars); let i =index">
+    <i class="<i fa-regular fa-star text-warning"></i>
+  </ng-container>
+</div>

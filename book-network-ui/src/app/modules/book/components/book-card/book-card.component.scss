@@ -1,0 +1,38 @@
+div {
+  &.card {
+    max-height: 450px;
+    min-height: 450px;
+
+    .card-body {
+      overflow: hidden; // Hide scrollbar by default
+      max-height: 200px; // Limit height for scrollable content
+
+      &:hover {
+        overflow-y: auto; // Show scrollbar on hover
+      }
+
+      // Custom scrollbar styling
+      &::-webkit-scrollbar {
+        width: 8px; // Adjust the width of the scrollbar
+      }
+
+      &::-webkit-scrollbar-track {
+        background: transparent; // Make the track transparent
+        border-radius: 10px; // Rounded corners for track
+      }
+
+      &::-webkit-scrollbar-thumb {
+        background: #888; // Thumb (scroll indicator) color
+        border-radius: 10px; // Rounded corners for thumb
+      }
+
+      &::-webkit-scrollbar-thumb:hover {
+        background: #555; // Thumb color on hover
+      }
+    }
+  }
+}
+
+i {
+  cursor: pointer;
+}
