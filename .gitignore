@@ -1,3 +1,4 @@
+# Backend-specific ignores
 HELP.md
 target/
 !.mvn/wrapper/maven-wrapper.jar
@@ -29,5 +30,14 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 
-### VS Code ###
+# Frontend-specific ignores (Angular)
+book-network-ui/node_modules/
+book-network-ui/dist/
+book-network-ui/.angular/
+book-network-ui/.idea/
+book-network-ui/.vscode/
+
+# General ignores
+.DS_Store
+Thumbs.db
 .vscode/
